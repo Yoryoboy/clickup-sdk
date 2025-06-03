@@ -31,7 +31,7 @@ class Task {
       creator: this.creator?.username || null,
       creator_email: this.creator?.email || null,
       assignees: this.getAssigneeNames(),
-      watchers: this.watchers?.map(w => w.username) || [],
+      watchers: this.watchers?.map((w) => w.username) || [],
       tags: this.tags || [],
       priority: this.priority,
       due_date: this.due_date,
@@ -42,7 +42,26 @@ class Task {
       folder_name: this.folder?.name || null,
       url: this.url,
       is_completed: this.isCompleted(),
-      locations: this.locations?.map(loc => loc.name) || []
+      locations: this.locations?.map((loc) => loc.name) || [],
+      custom_fields:
+        this.custom_fields
+          ?.map((cf) => {
+            // Handle dropdown type fields by getting the option name instead of the index
+            if (cf.type === "drop_down" && cf.type_config?.options && cf.value !== undefined && cf.value !== null) {
+              const selectedOption = cf.type_config.options[cf.value];
+              return {
+                name: cf.name,
+                value: selectedOption?.name || cf.value,
+              };
+            }
+            
+            // Regular handling for other field types
+            return {
+              name: cf.name,
+              value: cf.value,
+            };
+          })
+          .filter((cf) => cf.value !== undefined && cf.value !== null) || [],
     };
   }
 }
