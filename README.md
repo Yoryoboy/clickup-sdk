@@ -75,6 +75,48 @@ const firstPageTasks = await clickUp.tasks.getTasks({
 });
 ```
 
+### Filtering Tasks Across a Workspace
+
+Use `getFilteredTasks()` to search for tasks across an entire workspace with powerful filtering options:
+
+```javascript
+// Get tasks with specific filters across the workspace
+const filteredTasks = await clickUp.tasks.getFilteredTasks({
+  team_id: '1234567', // Required workspace ID
+  page: 'all',         // Get all pages
+  statuses: ['in progress', 'review'],
+  assignees: ['12345'], // User IDs
+  tags: ['important'],
+  due_date_gt: Date.now(), // Due date in the future
+  include_closed: false
+});
+
+console.log(`Found ${filteredTasks.length} matching tasks`);
+```
+
+### Filtering by Custom Fields
+
+The SDK supports advanced filtering using custom fields:
+
+```javascript
+// Filter tasks by custom fields
+const tasksWithCustomFields = await clickUp.tasks.getFilteredTasks({
+  team_id: '1234567',
+  custom_fields: [
+    {
+      field_id: 'abc123def456',
+      operator: '>',
+      value: 5
+    },
+    {
+      field_id: 'xyz789',
+      operator: 'RANGE',
+      value: [1671246000000, 1671505200000] // Date range
+    }
+  ]
+});
+```
+
 ### Working with Tasks
 
 Each task is returned as a `Task` instance with helpful methods:
@@ -140,6 +182,27 @@ Parameters:
 - `params.page`: Page number or "all" to fetch all pages
 - `params.include_closed`: Whether to include closed tasks
 - `params.reverse`: Whether to reverse the order of tasks
+- ...other ClickUp API parameters
+
+Returns: Promise<Task[]> - Array of Task instances
+
+#### getFilteredTasks(params)
+
+Fetches filtered tasks across an entire workspace.
+
+Parameters:
+- `params.team_id` (required): The ClickUp workspace ID
+- `params.page`: Page number or "all" to fetch all pages
+- `params.space_ids`: Array of space IDs to filter by
+- `params.project_ids`: Array of folder IDs to filter by
+- `params.list_ids`: Array of list IDs to filter by
+- `params.statuses`: Array of status names to filter by
+- `params.assignees`: Array of user IDs to filter by
+- `params.tags`: Array of tags to filter by
+- `params.due_date_gt/lt`: Filter by due date (Unix timestamp in ms)
+- `params.date_created_gt/lt`: Filter by creation date
+- `params.date_updated_gt/lt`: Filter by update date
+- `params.custom_fields`: Array of custom field filter objects
 - ...other ClickUp API parameters
 
 Returns: Promise<Task[]> - Array of Task instances
