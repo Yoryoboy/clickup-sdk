@@ -9,7 +9,6 @@ const clickUp = new ClickUp(apiKey);
 
 const tasks = await clickUp.tasks.getTasks({
   list_id: "901404730264",
-  page: "all",
 });
 
-console.log(tasks.length);
+console.log(tasks[1].reduceInfo());

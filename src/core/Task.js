@@ -10,6 +10,41 @@ class Task {
   isCompleted() {
     return this.status?.status === "done";
   }
+
+  /**
+   * Returns a simplified version of the task data with flattened structure
+   * @returns {Object} Simplified task information
+   */
+  reduceInfo() {
+    return {
+      id: this.id,
+      custom_id: this.custom_id,
+      name: this.name,
+      description: this.description,
+      status: this.status?.status || null,
+      status_color: this.status?.color || null,
+      date_created: this.date_created,
+      date_updated: this.date_updated,
+      date_closed: this.date_closed,
+      date_done: this.date_done,
+      archived: this.archived,
+      creator: this.creator?.username || null,
+      creator_email: this.creator?.email || null,
+      assignees: this.getAssigneeNames(),
+      watchers: this.watchers?.map(w => w.username) || [],
+      tags: this.tags || [],
+      priority: this.priority,
+      due_date: this.due_date,
+      start_date: this.start_date,
+      time_estimate: this.time_estimate,
+      list_name: this.list?.name || null,
+      project_name: this.project?.name || null,
+      folder_name: this.folder?.name || null,
+      url: this.url,
+      is_completed: this.isCompleted(),
+      locations: this.locations?.map(loc => loc.name) || []
+    };
+  }
 }
 
 export default Task;
