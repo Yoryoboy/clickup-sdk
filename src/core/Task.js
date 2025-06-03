@@ -11,16 +11,11 @@ class Task {
     return this.status?.status === "done";
   }
 
-  /**
-   * Returns a simplified version of the task data with flattened structure
-   * @returns {Object} Simplified task information
-   */
   reduceInfo() {
     return {
       id: this.id,
       custom_id: this.custom_id,
       name: this.name,
-      description: this.description,
       status: this.status?.status || null,
       status_color: this.status?.color || null,
       date_created: this.date_created,
@@ -47,21 +42,30 @@ class Task {
         this.custom_fields
           ?.map((cf) => {
             // Handle dropdown type fields by getting the option name instead of the index
-            if (cf.type === "drop_down" && cf.type_config?.options && cf.value !== undefined && cf.value !== null) {
+            if (
+              cf.type === "drop_down" &&
+              cf.type_config?.options &&
+              cf.value !== undefined &&
+              cf.value !== null
+            ) {
               const selectedOption = cf.type_config.options[cf.value];
               return {
+                id: cf.id,
                 name: cf.name,
                 value: selectedOption?.name || cf.value,
               };
             }
-            
+
             // Regular handling for other field types
             return {
+              id: cf.id,
               name: cf.name,
               value: cf.value,
             };
           })
           .filter((cf) => cf.value !== undefined && cf.value !== null) || [],
+
+      description: this.description,
     };
   }
 }
