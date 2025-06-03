@@ -89,7 +89,28 @@ const completedTasks = tasks.filter(task => task.isCompleted());
 const taskWithAssignees = tasks[0];
 const assigneeNames = taskWithAssignees.getAssigneeNames();
 console.log(`Task assigned to: ${assigneeNames.join(', ')}`);
+
+// Get simplified task data
+const simplifiedTask = tasks[0].reduceInfo();
+console.log(simplifiedTask);
+// Output: { id: '123', name: 'Task Name', status: 'in progress', ... }
 ```
+
+### Simplified Task Data
+
+The `reduceInfo()` method provides a simplified view of task data with a flattened structure:
+
+```javascript
+const task = tasks[0];
+const info = task.reduceInfo();
+```
+
+The simplified object includes:
+- Basic task properties (id, name, description, etc.)
+- Flattened nested objects (status, creator, etc.)
+- Simplified arrays (assignees, watchers as usernames)
+- Special handling for dropdown custom fields (shows option names instead of indices)
+- Only includes custom fields with defined values
 
 ## 📚 API Reference
 
@@ -130,6 +151,10 @@ Wrapper for individual task objects with helpful methods.
 Methods:
 - `getAssigneeNames()`: Returns an array of assignee usernames
 - `isCompleted()`: Returns true if the task status is "done"
+- `reduceInfo()`: Returns a simplified object with flattened task data
+  - Converts nested properties into flat key-value pairs
+  - Transforms dropdown custom fields to show option names instead of indices
+  - Filters out custom fields with undefined values
 
 ## 🧱 Project Structure
 
