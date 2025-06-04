@@ -138,6 +138,27 @@ console.log(simplifiedTask);
 // Output: { id: '123', name: 'Task Name', status: 'in progress', ... }
 ```
 
+### Updating Tasks
+
+You can update tasks using the `updateTask` method:
+
+```javascript
+// Update a task's status and due date
+const updatedTask = await clickUp.tasks.updateTask('task123', {
+  status: 'in progress',
+  due_date: Date.now() + 7 * 24 * 60 * 60 * 1000, // One week from now
+  due_date_time: true
+});
+
+console.log(`Task updated: ${updatedTask.name} is now ${updatedTask.status.status}`);
+
+// Update a task's name and description
+const renamedTask = await clickUp.tasks.updateTask('task456', {
+  name: 'New task name',
+  description: 'Updated description with more details'
+});
+```
+
 ### Simplified Task Data
 
 The `reduceInfo()` method provides a simplified view of task data with a flattened structure:
@@ -206,6 +227,25 @@ Parameters:
 - ...other ClickUp API parameters
 
 Returns: Promise<Task[]> - Array of Task instances
+
+#### updateTask(task_id, data)
+
+Updates a task with new values.
+
+Parameters:
+- `task_id` (required): The ID of the task to update
+- `data`: Object containing the fields to update
+  - `name`: New name for the task
+  - `description`: New description for the task
+  - `status`: New status for the task
+  - `due_date`: New due date (Unix timestamp in ms)
+  - `due_date_time`: Whether the due date includes a specific time
+  - `start_date`: New start date (Unix timestamp in ms)
+  - `time_estimate`: Time estimate in milliseconds
+  - `archived`: Whether the task is archived
+  - ...other ClickUp API task fields
+
+Returns: Promise<Task> - The updated Task instance
 
 ### Task Class
 
