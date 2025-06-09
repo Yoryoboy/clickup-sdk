@@ -11,7 +11,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const apiKey = process.env.CLICKUP_API_KEY;
-const listId = "901407157574"; // Replace with your list ID
+const listId = "901407157574";
+const TrueNetBAUListID = "901409412574";
 
 async function runExample() {
   try {
@@ -22,13 +23,23 @@ async function runExample() {
     console.log("Fetching tasks from list...");
     const tasks = await clickUp.tasks.getTasks({
       list_id: listId,
-      page: "all",
+      page: 0,
       include_closed: true,
     });
 
     console.log(JSON.stringify(tasks[0].reduceInfo(), null, 2));
 
     console.log(`Found ${tasks.length} tasks`);
+
+    console.log("\nFetching custom fields for list...");
+    try {
+      const customFields = await clickUp.customFields.getListCustomFields(
+        TrueNetBAUListID
+      );
+      console.log(`Found ${customFields.length} custom fields:`);
+    } catch (error) {
+      console.error("Error fetching custom fields:", error.message);
+    }
   } catch (error) {
     console.error("Error:", error.message);
     if (error.response) {

@@ -247,6 +247,29 @@ Parameters:
 
 Returns: Promise<Task> - The updated Task instance
 
+### CustomFieldManager Class
+
+Manages operations related to ClickUp custom fields.
+
+Methods:
+- `getListCustomFields(list_id)`: Returns all custom fields for a specific list
+
+#### getListCustomFields(list_id)
+
+Fetches all custom fields available in a specific list.
+
+Parameters:
+- `list_id` (required): The ClickUp list ID
+
+Returns: Promise<Array> - Array of custom field objects
+
+Example:
+```javascript
+// Get custom fields for a list
+const customFields = await clickUp.customFields.getListCustomFields('123456789');
+console.log(customFields);
+```
+
 ### Task Class
 
 Wrapper for individual task objects with helpful methods.
@@ -269,10 +292,13 @@ clickup-sdk/
 │   ├── core/
 │   │   ├── ClickUp.js        # Main SDK class
 │   │   ├── TaskManager.js    # Task operations
+│   │   ├── CustomFieldManager.js # Custom fields operations
 │   │   └── Task.js           # Task wrapper class
 │   ├── utils/
 │   │   └── queryBuilder.js   # Query string builder
-│   └── index.js              # Example usage
+│   └── index.js              # Package entry point
+├── examples/
+│   └── basic-usage.js        # Example usage
 ├── .env                      # Environment variables
 ├── .gitignore
 ├── package.json
