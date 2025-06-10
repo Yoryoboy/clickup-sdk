@@ -1,4 +1,24 @@
 class Task {
+  /**
+   * Static method to reduce task information for either a single task or an array of tasks
+   * @param {Task|Array<Task>} tasks - Single Task instance or array of Task instances
+   * @returns {Object|Array<Object>} - Reduced task info object or array of reduced task info objects
+   */
+  static reduceInfo(tasks) {
+    // Handle array of tasks
+    if (Array.isArray(tasks)) {
+      return tasks.map(task => task.reduceInfo());
+    }
+    
+    // Handle single task (if it's a Task instance)
+    if (tasks instanceof Task) {
+      return tasks.reduceInfo();
+    }
+    
+    // Handle invalid input
+    throw new Error('Input must be a Task instance or an array of Task instances');
+  }
+  
   constructor(data) {
     Object.assign(this, data);
   }

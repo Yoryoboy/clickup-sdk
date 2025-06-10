@@ -350,13 +350,30 @@ console.log(customFields);
 
 Wrapper for individual task objects with helpful methods.
 
-Methods:
+#### Instance Methods
+
 - `getAssigneeNames()`: Returns an array of assignee usernames
 - `isCompleted()`: Returns true if the task status is "done"
 - `reduceInfo()`: Returns a simplified object with flattened task data
   - Converts nested properties into flat key-value pairs
   - Transforms dropdown custom fields to show option names instead of indices
   - Filters out custom fields with undefined values
+
+#### Static Methods
+
+- `Task.reduceInfo(tasks)`: Utility method that handles both single tasks and arrays of tasks
+  - If given a single Task instance, returns its reduced info object
+  - If given an array of Task instances, returns an array of reduced info objects
+  - Eliminates the need for `tasks.map(task => task.reduceInfo())`
+
+Example:
+```javascript
+// For a single task
+const reducedTask = Task.reduceInfo(task);
+
+// For an array of tasks - no need for .map() anymore!
+const reducedTasks = Task.reduceInfo(tasks);
+```
 
 ## 🧱 Project Structure
 
