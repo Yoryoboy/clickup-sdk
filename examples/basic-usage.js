@@ -23,11 +23,11 @@ async function runExample() {
     console.log("Fetching tasks from list...");
     const tasks = await clickUp.tasks.getTasks({
       list_id: listId,
-      page: 0,
+      page: "all",
       include_closed: true,
     });
 
-    console.log(JSON.stringify(tasks[0].reduceInfo(), null, 2));
+    const reducedInfo = tasks.map((t) => t.reduceInfo());
 
     console.log(`Found ${tasks.length} tasks`);
 
@@ -39,7 +39,7 @@ async function runExample() {
     );
     console.log(`Found ${customFields.length} custom fields:`);
 
-    const newTasks = tasks.map((task) => {
+    const newTasks = reducedInfo.map((task) => {
       const STATUS_MAP = {
         unassigned: "to do",
         unstarted: "to do",
@@ -47,17 +47,19 @@ async function runExample() {
         qc: "internal qc",
         submitted: "sent",
         approved: "approved",
-        cancelled: "cancelled",
+        canceled: "cancelled",
         billed: "approved",
       };
 
       const customFieldValues = (name) =>
         task.custom_fields.find((cf) => cf.name === name);
 
+      const projectTypeValue = customFieldValues("DESIGN TYPE")?.value;
+
       return {
         name: task.name,
         description: customFieldValues("JOB_NAME")?.value,
-        status: STATUS_MAP[task.status?.status] || "to do",
+        status: STATUS_MAP[task.status] || "to do",
         date_created: task.date_created,
         custom_fields: [
           {
@@ -67,12 +69,12 @@ async function runExample() {
           },
           {
             id: customFields.find((cf) => cf.name === "PROJECT TYPE")?.id,
-            value: customFieldValues(
-              "PROJECT TYPE"
-            )?.type_config?.options?.find(
-              (option) =>
-                option.value === customFieldValues("DESIGN TYPE")?.value
-            )?.value,
+            value:
+              customFields
+                .find((cf) => cf.name === "PROJECT TYPE")
+                ?.type_config.options.find(
+                  (option) => option.name === projectTypeValue
+                )?.id || "null",
           },
           {
             id: customFields.find((cf) => cf.name === "HUB")?.id,
@@ -99,11 +101,26 @@ async function runExample() {
             id: customFields.find((cf) => cf.name === "SUBMITTED TO QC")?.id,
             value: customFieldValues("TRU_IN QC_INT")?.value,
           },
+          {
+            id: customFields.find((cf) => cf.name === "TASK ID")?.id,
+            value: task.id,
+          },
         ],
       };
     });
 
-    console.log(newTasks);
+    console.log(`Preparing to create ${newTasks.length} tasks in batches...`);
+
+    // Create tasks with batching (5 tasks per batch, 5 second delay between batches)
+    const createdTasks = await clickUp.tasks.createTasks(
+      TrueNetBAUListID,
+      newTasks,
+      {
+        batchSize: 80,
+      }
+    );
+
+    console.log(`Successfully created ${createdTasks.length} tasks in batches`);
   } catch (error) {
     console.error("Error:", error.message);
     if (error.response) {

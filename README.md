@@ -247,6 +247,62 @@ Parameters:
 
 Returns: Promise<Task> - The updated Task instance
 
+#### createTask(list_id, taskData)
+
+Creates a new task in a specific list.
+
+Parameters:
+- `list_id` (required): The ID of the list to create the task in
+- `taskData`: Object containing the task data
+  - `name` (required): Task name
+  - `description`: Task description
+  - `assignees`: Array of assignee user IDs
+  - `tags`: Array of tags
+  - `status`: Task status
+  - `priority`: Task priority (null, 1, 2, 3, or 4)
+  - `due_date`: Due date (Unix timestamp in ms)
+  - `start_date`: Start date (Unix timestamp in ms)
+  - `custom_fields`: Array of custom field objects
+  - ...other ClickUp API task fields
+
+Returns: Promise<Task> - The created Task instance
+
+#### createTasks(list_id, tasks, options)
+
+Creates multiple tasks with rate limiting to handle ClickUp's API limits.
+
+Parameters:
+- `list_id` (required): The ID of the list to create tasks in
+- `tasks`: Single task object or array of task objects (see createTask for object structure)
+- `options`: Options for batch processing
+  - `batchSize`: Number of tasks to process per batch (default: 100)
+  - `delayBetweenBatches`: Delay between batches in milliseconds (default: 60000ms = 1 minute)
+
+Returns: Promise<Array<Task>> - Array of created Task instances
+
+Example:
+```javascript
+// Create a single task
+const newTask = await clickUp.tasks.createTask("123456789", {
+  name: "New Task",
+  description: "Task description",
+  status: "to do",
+  due_date: 1735603200000 // Unix timestamp in ms
+});
+
+// Create multiple tasks with batching
+const tasksToCreate = [
+  { name: "Task 1", status: "to do" },
+  { name: "Task 2", status: "in progress" },
+  // ... more tasks
+];
+
+const createdTasks = await clickUp.tasks.createTasks("123456789", tasksToCreate, {
+  batchSize: 50, // Process 50 tasks at a time
+  delayBetweenBatches: 65000 // Wait 65 seconds between batches
+});
+```
+
 ### CustomFieldManager Class
 
 Manages operations related to ClickUp custom fields.

@@ -1,6 +1,29 @@
 import Task from "./Task.js";
 import buildQuery from "../utils/queryBuilder.js";
 
+/**
+ * Utility function to split an array into chunks of specified size
+ * @param {Array} array - The array to split
+ * @param {number} chunkSize - Size of each chunk
+ * @returns {Array} Array of chunks
+ */
+function chunkArray(array, chunkSize) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
+/**
+ * Utility function to delay execution for a specified time
+ * @param {number} ms - Milliseconds to delay
+ * @returns {Promise} Promise that resolves after the delay
+ */
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class TaskManager {
   constructor(client) {
     this.client = client;
@@ -84,6 +107,87 @@ class TaskManager {
     const res = await this.client.put(url, data);
 
     return new Task(res.data);
+  }
+
+  /**
+   * Create a new task in a specific list
+   * @param {string} list_id - The ID of the list to create the task in
+   * @param {Object} taskData - Task data object
+   * @param {string} taskData.name - Task name (required)
+   * @param {string} [taskData.description] - Task description
+   * @param {Array<number>} [taskData.assignees] - Array of assignee user IDs
+   * @param {boolean} [taskData.archived] - Whether the task is archived
+   * @param {Array<string>} [taskData.tags] - Array of tags
+   * @param {string} [taskData.status] - Task status
+   * @param {number|null} [taskData.priority] - Task priority
+   * @param {number} [taskData.due_date] - Due date (Unix timestamp in ms)
+   * @param {boolean} [taskData.due_date_time] - Whether the due date includes time
+   * @param {number} [taskData.time_estimate] - Time estimate in milliseconds
+   * @param {number} [taskData.start_date] - Start date (Unix timestamp in ms)
+   * @param {boolean} [taskData.start_date_time] - Whether the start date includes time
+   * @param {number} [taskData.points] - Sprint points
+   * @param {boolean} [taskData.notify_all] - Whether to notify all assignees
+   * @param {string|null} [taskData.parent] - Parent task ID for subtasks
+   * @param {string} [taskData.markdown_content] - Markdown formatted description
+   * @param {string|null} [taskData.links_to] - Task ID to create a linked dependency
+   * @param {boolean} [taskData.check_required_custom_fields] - Whether to enforce required custom fields
+   * @param {Array<Object>} [taskData.custom_fields] - Custom fields array
+   * @param {number} [taskData.custom_item_id] - Custom task type ID
+   * @returns {Promise<Task>} The created task
+   * @throws {Error} If list_id is missing or taskData.name is missing
+   */
+  async createTask(list_id, taskData) {
+    if (!list_id) throw new Error("Missing list_id");
+    if (!taskData.name) throw new Error("Task name is required");
+
+    const url = `/list/${list_id}/task`;
+    const res = await this.client.post(url, taskData);
+
+    return new Task(res.data);
+  }
+
+  /**
+   * Create multiple tasks with rate limiting
+   * @param {string} list_id - The ID of the list to create tasks in
+   * @param {Array<Object>|Object} tasks - Single task object or array of task objects
+   * @param {Object} options - Options for batch processing
+   * @param {number} [options.batchSize=100] - Number of tasks to process per batch (max 100)
+   * @param {number} [options.delayBetweenBatches=60000] - Delay between batches in milliseconds (default: 60000ms = 1 minute)
+   * @returns {Promise<Array<Task>>} Array of created tasks
+   * @throws {Error} If list_id is missing
+   */
+  async createTasks(list_id, tasks, options = {}) {
+    if (!list_id) throw new Error("Missing list_id");
+    
+    // Default options
+    const batchSize = options.batchSize || 100;
+    const delayBetweenBatches = options.delayBetweenBatches || 60000; // 1 minute default
+    
+    // Handle single task case
+    if (!Array.isArray(tasks)) {
+      return [await this.createTask(list_id, tasks)];
+    }
+    
+    // Split tasks into batches
+    const batches = chunkArray(tasks, batchSize);
+    const createdTasks = [];
+    
+    // Process each batch with rate limiting
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+      
+      // Create tasks in current batch (in parallel)
+      const batchPromises = batch.map(taskData => this.createTask(list_id, taskData));
+      const batchResults = await Promise.all(batchPromises);
+      createdTasks.push(...batchResults);
+      
+      // Delay before processing next batch (except for the last batch)
+      if (i < batches.length - 1) {
+        await delay(delayBetweenBatches);
+      }
+    }
+    
+    return createdTasks;
   }
 }
 
