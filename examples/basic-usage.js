@@ -23,8 +23,9 @@ async function runExample() {
     console.log("Fetching tasks from list...");
     const tasks = await clickUp.tasks.getTasks({
       list_id: listId,
-      page: "all",
+      page: 0,
       include_closed: true,
+      reverse: false,
     });
 
     const reducedInfo = tasks.map((t) => t.reduceInfo());
@@ -105,13 +106,25 @@ async function runExample() {
             id: customFields.find((cf) => cf.name === "TASK ID")?.id,
             value: task.id,
           },
+          {
+            id: customFields.find((cf) => cf.name === "ESTIMATED DELIVERY DATE")
+              ?.id,
+            value: customFieldValues("TRU_IN QC_INT")?.value,
+          },
+          {
+            id: customFields.find((cf) => cf.name === "RECEIVED DATE")?.id,
+            value: task.date_created,
+          },
+          {
+            id: customFields.find((cf) => cf.name === "JOB TYPE CCI")?.id,
+            value: "81f785fe-7a17-4075-ad7b-29918a6f55ad",
+          },
         ],
       };
     });
 
     console.log(`Preparing to create ${newTasks.length} tasks in batches...`);
 
-    // Create tasks with batching (5 tasks per batch, 5 second delay between batches)
     const createdTasks = await clickUp.tasks.createTasks(
       TrueNetBAUListID,
       newTasks,
