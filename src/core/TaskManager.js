@@ -153,6 +153,8 @@ class TaskManager {
    * @param {Object} options - Options for batch processing
    * @param {number} [options.batchSize=100] - Number of tasks to process per batch (max 100)
    * @param {number} [options.delayBetweenBatches=60000] - Delay between batches in milliseconds (default: 60000ms = 1 minute)
+   * @param {Function} [options.onProgress] - Callback function for progress updates
+   * @param {boolean} [options.verbose=false] - Whether to log progress to console
    * @returns {Promise<Array<Task>>} Array of created tasks
    * @throws {Error} If list_id is missing
    */
@@ -162,30 +164,102 @@ class TaskManager {
     // Default options
     const batchSize = options.batchSize || 100;
     const delayBetweenBatches = options.delayBetweenBatches || 60000; // 1 minute default
+    const onProgress = options.onProgress || (() => {});
+    const verbose = options.verbose || false;
     
     // Handle single task case
     if (!Array.isArray(tasks)) {
-      return [await this.createTask(list_id, tasks)];
+      if (verbose) console.log("Creating a single task...");
+      const result = [await this.createTask(list_id, tasks)];
+      if (verbose) console.log("Task created successfully.");
+      return result;
     }
     
     // Split tasks into batches
     const batches = chunkArray(tasks, batchSize);
     const createdTasks = [];
+    const totalTasks = tasks.length;
+    
+    // Log batch information
+    if (verbose) {
+      console.log(`Creating ${totalTasks} tasks in ${batches.length} batches (${batchSize} tasks per batch)`);
+      console.log(`Delay between batches: ${delayBetweenBatches}ms (${delayBetweenBatches/1000} seconds)`);
+    }
     
     // Process each batch with rate limiting
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
+      const batchNumber = i + 1;
+      const tasksProcessed = i * batchSize;
+      
+      // Log batch start
+      if (verbose) {
+        console.log(`\nProcessing batch ${batchNumber}/${batches.length} (${batch.length} tasks)...`);
+      }
+      
+      // Notify progress
+      onProgress({
+        type: 'batchStart',
+        batchNumber,
+        totalBatches: batches.length,
+        batchSize: batch.length,
+        tasksProcessed,
+        totalTasks
+      });
       
       // Create tasks in current batch (in parallel)
+      const startTime = Date.now();
       const batchPromises = batch.map(taskData => this.createTask(list_id, taskData));
       const batchResults = await Promise.all(batchPromises);
+      const endTime = Date.now();
       createdTasks.push(...batchResults);
+      
+      // Log batch completion
+      if (verbose) {
+        console.log(`Batch ${batchNumber}/${batches.length} completed in ${(endTime - startTime)/1000} seconds`);
+        console.log(`Progress: ${tasksProcessed + batch.length}/${totalTasks} tasks created (${Math.round((tasksProcessed + batch.length) / totalTasks * 100)}%)`);
+      }
+      
+      // Notify progress
+      onProgress({
+        type: 'batchComplete',
+        batchNumber,
+        totalBatches: batches.length,
+        batchSize: batch.length,
+        tasksProcessed: tasksProcessed + batch.length,
+        totalTasks,
+        batchDuration: endTime - startTime
+      });
       
       // Delay before processing next batch (except for the last batch)
       if (i < batches.length - 1) {
+        if (verbose) {
+          console.log(`Waiting ${delayBetweenBatches/1000} seconds before next batch...`);
+        }
+        
+        // Notify waiting
+        onProgress({
+          type: 'waiting',
+          waitTime: delayBetweenBatches,
+          nextBatch: batchNumber + 1,
+          totalBatches: batches.length
+        });
+        
         await delay(delayBetweenBatches);
       }
     }
+    
+    // Log completion
+    if (verbose) {
+      console.log(`\nAll tasks created successfully! Created ${createdTasks.length} tasks in ${batches.length} batches.`);
+    }
+    
+    // Notify completion
+    onProgress({
+      type: 'complete',
+      totalTasks: createdTasks.length,
+      totalBatches: batches.length
+    });
     
     return createdTasks;
   }

@@ -277,6 +277,26 @@ Parameters:
 - `options`: Options for batch processing
   - `batchSize`: Number of tasks to process per batch (default: 100)
   - `delayBetweenBatches`: Delay between batches in milliseconds (default: 60000ms = 1 minute)
+  - `verbose`: Whether to log progress to console (default: false)
+  - `onProgress`: Callback function for progress updates
+
+The `onProgress` callback receives a progress object with the following properties:
+- For `type: 'batchStart'`:
+  - `batchNumber`: Current batch number (1-based)
+  - `totalBatches`: Total number of batches
+  - `batchSize`: Number of tasks in the current batch
+  - `tasksProcessed`: Number of tasks processed so far
+  - `totalTasks`: Total number of tasks to process
+- For `type: 'batchComplete'`:
+  - All of the above, plus:
+  - `batchDuration`: Time taken to process the batch in milliseconds
+- For `type: 'waiting'`:
+  - `waitTime`: Time to wait before next batch in milliseconds
+  - `nextBatch`: Next batch number
+  - `totalBatches`: Total number of batches
+- For `type: 'complete'`:
+  - `totalTasks`: Total number of tasks created
+  - `totalBatches`: Total number of batches processed
 
 Returns: Promise<Array<Task>> - Array of created Task instances
 

@@ -49,9 +49,35 @@ async function runExample() {
     console.log(`Preparing to create ${tasksToCreate.length} tasks in batches...`);
     
     // Create tasks with batching (5 tasks per batch, 5 second delay between batches)
+    // Enable verbose logging to see progress in the console
     const createdTasks = await clickUp.tasks.createTasks(listId, tasksToCreate, {
       batchSize: 5,
-      delayBetweenBatches: 5000 // 5 seconds between batches (for demo purposes)
+      delayBetweenBatches: 5000, // 5 seconds between batches (for demo purposes)
+      verbose: true, // Enable console logging
+      onProgress: (progress) => {
+        // You can use this callback to update a UI or perform custom logging
+        switch(progress.type) {
+          case 'batchStart':
+            // Custom progress handling when a batch starts
+            // Example: update a progress bar in a UI
+            break;
+            
+          case 'batchComplete':
+            // Custom progress handling when a batch completes
+            // Example: You could log to a file or send a notification
+            break;
+            
+          case 'waiting':
+            // Custom handling during the waiting period
+            // Example: Show a countdown timer
+            break;
+            
+          case 'complete':
+            // Custom handling when all batches are complete
+            // Example: Show a success message or trigger another process
+            break;
+        }
+      }
     });
     
     console.log(`Successfully created ${createdTasks.length} tasks in batches`);

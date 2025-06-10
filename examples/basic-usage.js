@@ -117,6 +117,25 @@ async function runExample() {
       newTasks,
       {
         batchSize: 80,
+        verbose: true,
+        onProgress: (progress) => {
+          switch (progress.type) {
+            case "batchStart":
+              console.log("Batch started");
+              break;
+            case "batchComplete":
+              console.log("Batch completed");
+              break;
+
+            case "waiting":
+              console.log("Waiting");
+              break;
+
+            case "complete":
+              console.log("Complete");
+              break;
+          }
+        },
       }
     );
 
