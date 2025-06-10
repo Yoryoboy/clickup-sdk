@@ -25,4 +25,7 @@ coverage/
 # Ignore OS generated files
 .DS_Store
 Thumbs.db
+
+# Ignore examples directory (local development only)
+examples/
 # End Generation Here
