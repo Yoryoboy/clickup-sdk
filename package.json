@@ -17,8 +17,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "if not exist dist mkdir dist && xcopy /E /I src dist && echo export { default } from \"./core/ClickUp.js\"; > dist/index.js",
-    "prepublishOnly": "npm run build",
+    "clean": "if exist dist rmdir /s /q dist",
+    "build": "pnpm run clean && mkdir dist && xcopy /E /I /Y src dist && echo export { default } from \"./core/ClickUp.js\"; > dist/index.js",
+    "prepublishOnly": "pnpm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
