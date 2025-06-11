@@ -5,20 +5,19 @@ class Task {
    * @returns {Object|Array<Object>} - Reduced task info object or array of reduced task info objects
    */
   static reduceInfo(tasks) {
-    // Handle array of tasks
     if (Array.isArray(tasks)) {
-      return tasks.map(task => task.reduceInfo());
+      return tasks.map((task) => task.reduceInfo());
     }
-    
-    // Handle single task (if it's a Task instance)
+
     if (tasks instanceof Task) {
       return tasks.reduceInfo();
     }
-    
-    // Handle invalid input
-    throw new Error('Input must be a Task instance or an array of Task instances');
+
+    throw new Error(
+      "Input must be a Task instance or an array of Task instances"
+    );
   }
-  
+
   constructor(data) {
     Object.assign(this, data);
   }
@@ -61,7 +60,6 @@ class Task {
       custom_fields:
         this.custom_fields
           ?.map((cf) => {
-            // Handle dropdown type fields by getting the option name instead of the index
             if (
               cf.type === "drop_down" &&
               cf.type_config?.options &&
@@ -76,7 +74,6 @@ class Task {
               };
             }
 
-            // Regular handling for other field types
             return {
               id: cf.id,
               name: cf.name,

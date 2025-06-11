@@ -323,6 +323,42 @@ const createdTasks = await clickUp.tasks.createTasks("123456789", tasksToCreate,
 });
 ```
 
+### ListManager Class
+
+Manages operations related to ClickUp lists.
+
+#### addTaskToList(list_id, task_id)
+
+Adds a task to an additional list. Note that this requires the "Tasks in Multiple Lists" ClickApp to be enabled in your workspace.
+
+Parameters:
+- `list_id` (required): The ID of the list to add the task to
+- `task_id` (required): The ID of the task to add to the list
+
+Returns: Promise<Object> - The API response
+
+Example:
+```javascript
+// Add a task to another list
+await clickUp.lists.addTaskToList('123456789', 'abc123def456');
+```
+
+#### getList(list_id)
+
+Retrieves a list by its ID.
+
+Parameters:
+- `list_id` (required): The ID of the list to retrieve
+
+Returns: Promise<Object> - The list data
+
+Example:
+```javascript
+// Get list details
+const list = await clickUp.lists.getList('123456789');
+console.log(list.name);
+```
+
 ### CustomFieldManager Class
 
 Manages operations related to ClickUp custom fields.
@@ -385,6 +421,7 @@ clickup-sdk/
 │   ├── core/
 │   │   ├── ClickUp.js        # Main SDK class
 │   │   ├── TaskManager.js    # Task operations
+│   │   ├── ListManager.js    # List operations
 │   │   ├── CustomFieldManager.js # Custom fields operations
 │   │   └── Task.js           # Task wrapper class
 │   ├── utils/
