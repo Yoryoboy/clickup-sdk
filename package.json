@@ -1,6 +1,6 @@
 {
   "name": "@yoryoboy/clickup-sdk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A modular JavaScript SDK for interacting with the ClickUp API",
   "type": "module",
   "main": "dist/index.js",
