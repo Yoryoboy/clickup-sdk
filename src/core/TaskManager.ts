@@ -1,5 +1,6 @@
 import Task from "./Task.js";
 import buildQuery from "../utils/queryBuilder.js";
+import { chunkArray, delay } from "../utils/helpers.js";
 import {
   GetTasksParams,
   GetFilteredTasksParams,
@@ -7,29 +8,6 @@ import {
   CreateTasksOptions,
   TaskCreationProgress,
 } from "../types/index.js";
-
-/**
- * Utility function to split an array into chunks of specified size
- * @param array - The array to split
- * @param chunkSize - Size of each chunk
- * @returns Array of chunks
- */
-function chunkArray<T>(array: T[], chunkSize: number): T[][] {
-  const chunks = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    chunks.push(array.slice(i, i + chunkSize));
-  }
-  return chunks;
-}
-
-/**
- * Utility function to delay execution for a specified time
- * @param ms - Milliseconds to delay
- * @returns Promise that resolves after the delay
- */
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 class TaskManager {
   client: any;
