@@ -1,42 +1,30 @@
-import Task from "./Task.js";
-import buildQuery from "../utils/queryBuilder.js";
-
-/**
- * Utility function to split an array into chunks of specified size
- * @param {Array} array - The array to split
- * @param {number} chunkSize - Size of each chunk
- * @returns {Array} Array of chunks
- */
-function chunkArray(array, chunkSize) {
-  const chunks = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    chunks.push(array.slice(i, i + chunkSize));
-  }
-  return chunks;
-}
-
-/**
- * Utility function to delay execution for a specified time
- * @param {number} ms - Milliseconds to delay
- * @returns {Promise} Promise that resolves after the delay
- */
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import Task from "./Task";
+import buildQuery from "../utils/queryBuilder";
+import { chunkArray, delay } from "../utils/helpers";
+import {
+  GetTasksParams,
+  GetFilteredTasksParams,
+  CreateTaskData,
+  CreateTasksOptions,
+  TaskCreationProgress,
+  UpdateTaskData,
+} from "../types/index";
+import { AxiosInstance } from "axios";
 
 class TaskManager {
-  constructor(client) {
+  client: AxiosInstance;
+
+  constructor(client: AxiosInstance) {
     this.client = client;
   }
 
-  async getTasks(params = {}) {
+  async getTasks(params: GetTasksParams): Promise<Array<Task>> {
     const { list_id, page, ...query } = params;
     if (!list_id) throw new Error("Missing list_id");
 
-    // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
-      let allTasks = [];
+      let allTasks: Task[] = [];
       let lastPage = false;
 
       do {
@@ -49,31 +37,27 @@ class TaskManager {
         currentPage++;
       } while (!lastPage);
 
-      return allTasks.map((t) => new Task(t));
+      return allTasks.map((t: Task) => new Task(t));
     }
 
-    // Case 2: regular one-page fetch
     const search = buildQuery({ ...query, page });
     const url = `/list/${list_id}/task?${search}`;
     const res = await this.client.get(url);
 
-    return res.data.tasks.map((t) => new Task(t));
+    return res.data.tasks.map((t: Task) => new Task(t));
   }
 
-  async getFilteredTasks(params = {}) {
+  async getFilteredTasks(params: GetFilteredTasksParams): Promise<Array<Task>> {
     const { team_id, page, custom_fields, ...query } = params;
 
     if (!team_id) throw new Error("Missing team_id");
 
-    // Handle custom_fields array by stringifying it if it's an array
     if (custom_fields && Array.isArray(custom_fields)) {
       query.custom_fields = JSON.stringify(custom_fields);
     }
-
-    // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
-      let allTasks = [];
+      let allTasks: Task[] = [];
       let hasMore = true;
 
       do {
@@ -89,18 +73,24 @@ class TaskManager {
         }
       } while (hasMore);
 
-      return allTasks.map((t) => new Task(t));
+      return allTasks.map((t: Task) => new Task(t));
     }
 
-    // Case 2: regular one-page fetch
     const search = buildQuery({ ...query, page });
     const url = `/team/${team_id}/task?${search}`;
     const res = await this.client.get(url);
 
-    return (res.data.tasks || []).map((t) => new Task(t));
+    return (res.data.tasks || []).map((t: Task) => new Task(t));
   }
 
-  async updateTask(task_id, data = {}) {
+  /**
+   * Update a task by ID
+   * @param {string} task_id - The ID of the task to update
+   * @param {UpdateTaskData} data - The task data to update
+   * @returns {Promise<Task>} The updated task
+   * @throws {Error} If task_id is missing
+   */
+  async updateTask(task_id: string, data: UpdateTaskData = {}): Promise<Task> {
     if (!task_id) throw new Error("Missing task_id");
 
     const url = `/task/${task_id}`;
@@ -136,7 +126,7 @@ class TaskManager {
    * @returns {Promise<Task>} The created task
    * @throws {Error} If list_id is missing or taskData.name is missing
    */
-  async createTask(list_id, taskData) {
+  async createTask(list_id: string, taskData: CreateTaskData): Promise<Task> {
     if (!list_id) throw new Error("Missing list_id");
     if (!taskData.name) throw new Error("Task name is required");
 
@@ -158,13 +148,18 @@ class TaskManager {
    * @returns {Promise<Array<Task>>} Array of created tasks
    * @throws {Error} If list_id is missing
    */
-  async createTasks(list_id, tasks, options = {}) {
+  async createTasks(
+    list_id: string,
+    tasks: CreateTaskData | CreateTaskData[],
+    options: CreateTasksOptions = {}
+  ): Promise<Task[]> {
     if (!list_id) throw new Error("Missing list_id");
 
     // Default options
     const batchSize = options.batchSize || 100;
     const delayBetweenBatches = options.delayBetweenBatches || 60000; // 1 minute default
-    const onProgress = options.onProgress || (() => {});
+    const onProgress =
+      options.onProgress || ((progress: TaskCreationProgress) => {});
     const verbose = options.verbose || false;
 
     // Handle single task case

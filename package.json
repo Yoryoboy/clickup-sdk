@@ -1,14 +1,17 @@
 {
   "name": "@yoryoboy/clickup-sdk",
-  "version": "1.0.6",
-  "description": "A modular JavaScript SDK for interacting with the ClickUp API",
-  "type": "module",
+  "version": "1.1.0",
+  "description": "A modular TypeScript SDK for interacting with the ClickUp API",
+  "type": "commonjs",
+  "target": "ES2020",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -17,8 +20,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "if exist dist rmdir /s /q dist",
-    "build": "pnpm run clean && mkdir dist && xcopy /E /I /Y src dist && echo export { default } from \"./core/ClickUp.js\"; > dist/index.js",
+    "clean": "rimraf dist",
+    "build": "pnpm run clean && tsc",
     "prepublishOnly": "pnpm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,7 +29,7 @@
     "clickup",
     "api",
     "sdk",
-    "javascript",
+    "typescript",
     "task-management"
   ],
   "author": "Yoryoboy",
@@ -43,9 +46,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@types/node": "^24.0.3",
     "dotenv": "^16.5.0",
     "eslint": "^9.28.0",
+    "eslint-plugin-jsdoc": "^51.2.2",
     "globals": "^16.2.0",
-    "standard": "^17.1.2"
+    "rimraf": "^6.0.1",
+    "standard": "^17.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.0"
   }
 }
