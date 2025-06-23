@@ -1,6 +1,6 @@
-import Task from "./Task.js";
-import buildQuery from "../utils/queryBuilder.js";
-import { chunkArray, delay } from "../utils/helpers.js";
+import Task from "./Task";
+import buildQuery from "../utils/queryBuilder";
+import { chunkArray, delay } from "../utils/helpers";
 import {
   GetTasksParams,
   GetFilteredTasksParams,
@@ -8,7 +8,7 @@ import {
   CreateTasksOptions,
   TaskCreationProgress,
   UpdateTaskData,
-} from "../types/index.js";
+} from "../types/index";
 import { AxiosInstance } from "axios";
 
 class TaskManager {
@@ -18,7 +18,7 @@ class TaskManager {
     this.client = client;
   }
 
-  async getTasks(params: GetTasksParams) {
+  async getTasks(params: GetTasksParams): Promise<Array<Task>> {
     const { list_id, page, ...query } = params;
     if (!list_id) throw new Error("Missing list_id");
 
@@ -47,7 +47,7 @@ class TaskManager {
     return res.data.tasks.map((t: Task) => new Task(t));
   }
 
-  async getFilteredTasks(params: GetFilteredTasksParams) {
+  async getFilteredTasks(params: GetFilteredTasksParams): Promise<Array<Task>> {
     const { team_id, page, custom_fields, ...query } = params;
 
     if (!team_id) throw new Error("Missing team_id");

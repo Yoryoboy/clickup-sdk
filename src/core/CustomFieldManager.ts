@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { CustomField } from "../types/index.js";
+import { CustomField } from "../types/index";
 
 /**
  * Manages operations related to ClickUp Custom Fields

@@ -1,4 +1,4 @@
-const buildQuery = (params: Record<string, any>) => {
+function buildQuery(params: Record<string, any>) {
   if (!params || Object.keys(params).length === 0) return "";
 
   const parts = [];
@@ -23,6 +23,6 @@ const buildQuery = (params: Record<string, any>) => {
   }
 
   return parts.join("&");
-};
+}
 
 export default buildQuery;

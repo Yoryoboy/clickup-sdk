@@ -1,9 +1,4 @@
-import {
-  CustomField,
-  Task as TaskType,
-  User,
-  Location,
-} from "../types/index.js";
+import { CustomField, Task as TaskType, User, Location } from "../types/index";
 
 class Task implements TaskType {
   id!: string;
@@ -57,7 +52,7 @@ class Task implements TaskType {
       creator: this.creator?.username || null,
       creator_email: this.creator?.email || null,
       assignees: this.getAssigneeNames(),
-      watchers: this.watchers?.map((w) => w.username) || [],
+      watchers: this.watchers?.map((w: User) => w.username) || [],
       tags: this.tags || [],
       priority: this.priority,
       due_date: this.due_date,

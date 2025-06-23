@@ -1,8 +1,9 @@
 {
   "name": "@yoryoboy/clickup-sdk",
   "version": "1.0.6",
-  "description": "A modular JavaScript SDK for interacting with the ClickUp API",
-  "type": "module",
+  "description": "A modular TypeScript SDK for interacting with the ClickUp API",
+  "type": "commonjs",
+  "target": "ES2020",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
@@ -26,7 +27,7 @@
     "clickup",
     "api",
     "sdk",
-    "javascript",
+    "typescript",
     "task-management"
   ],
   "author": "Yoryoboy",
@@ -50,6 +51,7 @@
     "globals": "^16.2.0",
     "rimraf": "^6.0.1",
     "standard": "^17.1.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.0"
   }
