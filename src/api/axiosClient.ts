@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const createAxiosClient = (apiKey: string) =>
-  axios.create({
+export function createAxiosClient(apiKey: string) {
+  return axios.create({
     baseURL: "https://api.clickup.com/api/v2",
     headers: {
       Accept: "application/json",
@@ -9,3 +9,4 @@ export const createAxiosClient = (apiKey: string) =>
       Authorization: apiKey,
     },
   });
+}

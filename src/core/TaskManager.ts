@@ -1,14 +1,20 @@
 import Task from "./Task.js";
 import buildQuery from "../utils/queryBuilder.js";
-import { GetTasksParams, GetFilteredTasksParams, CreateTaskData, CreateTasksOptions, TaskCreationProgress } from '../types/index.js';
+import {
+  GetTasksParams,
+  GetFilteredTasksParams,
+  CreateTaskData,
+  CreateTasksOptions,
+  TaskCreationProgress,
+} from "../types/index.js";
 
 /**
  * Utility function to split an array into chunks of specified size
- * @param {Array} array - The array to split
- * @param {number} chunkSize - Size of each chunk
- * @returns {Array} Array of chunks
+ * @param array - The array to split
+ * @param chunkSize - Size of each chunk
+ * @returns Array of chunks
  */
-function chunkArray(array, chunkSize) {
+function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   const chunks = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     chunks.push(array.slice(i, i + chunkSize));
@@ -18,10 +24,10 @@ function chunkArray(array, chunkSize) {
 
 /**
  * Utility function to delay execution for a specified time
- * @param {number} ms - Milliseconds to delay
- * @returns {Promise} Promise that resolves after the delay
+ * @param ms - Milliseconds to delay
+ * @returns Promise that resolves after the delay
  */
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -39,7 +45,7 @@ class TaskManager {
     // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
-      let allTasks = [];
+      let allTasks: Task[] = [];
       let lastPage = false;
 
       do {
@@ -76,7 +82,7 @@ class TaskManager {
     // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
-      let allTasks = [];
+      let allTasks: Task[] = [];
       let hasMore = true;
 
       do {
@@ -161,13 +167,18 @@ class TaskManager {
    * @returns {Promise<Array<Task>>} Array of created tasks
    * @throws {Error} If list_id is missing
    */
-  async createTasks(list_id: string, tasks: CreateTaskData | CreateTaskData[], options: CreateTasksOptions = {}) {
+  async createTasks(
+    list_id: string,
+    tasks: CreateTaskData | CreateTaskData[],
+    options: CreateTasksOptions = {}
+  ) {
     if (!list_id) throw new Error("Missing list_id");
 
     // Default options
     const batchSize = options.batchSize || 100;
     const delayBetweenBatches = options.delayBetweenBatches || 60000; // 1 minute default
-    const onProgress = options.onProgress || ((progress: TaskCreationProgress) => {});
+    const onProgress =
+      options.onProgress || ((progress: TaskCreationProgress) => {});
     const verbose = options.verbose || false;
 
     // Handle single task case
