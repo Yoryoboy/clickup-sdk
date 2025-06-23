@@ -1,5 +1,6 @@
 import Task from "./Task.js";
 import buildQuery from "../utils/queryBuilder.js";
+import { GetTasksParams, GetFilteredTasksParams, CreateTaskData, CreateTasksOptions, TaskCreationProgress } from '../types/index.js';
 
 /**
  * Utility function to split an array into chunks of specified size
@@ -31,7 +32,7 @@ class TaskManager {
     this.client = client;
   }
 
-  async getTasks(params: any = {}) {
+  async getTasks(params: GetTasksParams) {
     const { list_id, page, ...query } = params;
     if (!list_id) throw new Error("Missing list_id");
 
@@ -62,7 +63,7 @@ class TaskManager {
     return res.data.tasks.map((t) => new Task(t));
   }
 
-  async getFilteredTasks(params: any = {}) {
+  async getFilteredTasks(params: GetFilteredTasksParams) {
     const { team_id, page, custom_fields, ...query } = params;
 
     if (!team_id) throw new Error("Missing team_id");
@@ -138,7 +139,7 @@ class TaskManager {
    * @returns {Promise<Task>} The created task
    * @throws {Error} If list_id is missing or taskData.name is missing
    */
-  async createTask(list_id: string, taskData: any) {
+  async createTask(list_id: string, taskData: CreateTaskData) {
     if (!list_id) throw new Error("Missing list_id");
     if (!taskData.name) throw new Error("Task name is required");
 
@@ -160,13 +161,13 @@ class TaskManager {
    * @returns {Promise<Array<Task>>} Array of created tasks
    * @throws {Error} If list_id is missing
    */
-  async createTasks(list_id: string, tasks: any, options: any = {}) {
+  async createTasks(list_id: string, tasks: CreateTaskData | CreateTaskData[], options: CreateTasksOptions = {}) {
     if (!list_id) throw new Error("Missing list_id");
 
     // Default options
     const batchSize = options.batchSize || 100;
     const delayBetweenBatches = options.delayBetweenBatches || 60000; // 1 minute default
-    const onProgress = options.onProgress || (() => {});
+    const onProgress = options.onProgress || ((progress: TaskCreationProgress) => {});
     const verbose = options.verbose || false;
 
     // Handle single task case

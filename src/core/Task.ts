@@ -1,4 +1,8 @@
-class Task {
+import { Task as TaskType } from "../types/index.js";
+
+class Task implements TaskType {
+  id!: string;
+  name!: string;
   [key: string]: any;
   /**
    * Static method to reduce task information for either a single task or an array of tasks
