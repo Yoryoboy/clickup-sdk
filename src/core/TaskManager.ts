@@ -126,7 +126,7 @@ class TaskManager {
    * @returns {Promise<Task>} The created task
    * @throws {Error} If list_id is missing or taskData.name is missing
    */
-  async createTask(list_id: string, taskData: CreateTaskData) {
+  async createTask(list_id: string, taskData: CreateTaskData): Promise<Task> {
     if (!list_id) throw new Error("Missing list_id");
     if (!taskData.name) throw new Error("Task name is required");
 
@@ -152,7 +152,7 @@ class TaskManager {
     list_id: string,
     tasks: CreateTaskData | CreateTaskData[],
     options: CreateTasksOptions = {}
-  ) {
+  ): Promise<Task[]> {
     if (!list_id) throw new Error("Missing list_id");
 
     // Default options
