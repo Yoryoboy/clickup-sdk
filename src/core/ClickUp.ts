@@ -4,7 +4,13 @@ import CustomFieldManager from "./CustomFieldManager.js";
 import ListManager from "./ListManager.js";
 
 class ClickUp {
-  constructor(apiKey) {
+  apiKey: string;
+  client: any;
+  lists: ListManager;
+  tasks: TaskManager;
+  customFields: CustomFieldManager;
+
+  constructor(apiKey: string) {
     this.apiKey = apiKey;
     this.client = createAxiosClient(apiKey);
     this.lists = new ListManager(this.client);

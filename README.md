@@ -1,6 +1,6 @@
-# ClickUp SDK for JavaScript
+# ClickUp SDK for TypeScript
 
-A modular JavaScript SDK for interacting with the ClickUp API, built with ES modules and object-oriented programming principles.
+A modular TypeScript SDK for interacting with the ClickUp API, built with ES modules and object-oriented programming principles.
 
 ## 🧠 Project Overview
 
@@ -36,9 +36,9 @@ CLICKUP_API_KEY=your_api_key_here
 
 ### Basic Example
 
-```javascript
+```typescript
 import dotenv from 'dotenv';
-import ClickUp from './src/core/ClickUp.js';
+import ClickUp from './core/ClickUp.js';
 
 // Load environment variables
 dotenv.config();
@@ -417,18 +417,18 @@ const reducedTasks = Task.reduceInfo(tasks);
 clickup-sdk/
 ├── src/
 │   ├── api/
-│   │   └── axiosClient.js    # Axios client configuration
+│   │   └── axiosClient.ts    # Axios client configuration
 │   ├── core/
-│   │   ├── ClickUp.js        # Main SDK class
-│   │   ├── TaskManager.js    # Task operations
-│   │   ├── ListManager.js    # List operations
-│   │   ├── CustomFieldManager.js # Custom fields operations
-│   │   └── Task.js           # Task wrapper class
+│   │   ├── ClickUp.ts        # Main SDK class
+│   │   ├── TaskManager.ts    # Task operations
+│   │   ├── ListManager.ts    # List operations
+│   │   ├── CustomFieldManager.ts # Custom fields operations
+│   │   └── Task.ts           # Task wrapper class
 │   ├── utils/
-│   │   └── queryBuilder.js   # Query string builder
-│   └── index.js              # Package entry point
+│   │   └── queryBuilder.ts   # Query string builder
+│   └── index.ts              # Package entry point
 ├── examples/
-│   └── basic-usage.js        # Example usage
+│   └── basic-usage.ts        # Example usage
 ├── .env                      # Environment variables
 ├── .gitignore
 ├── package.json
@@ -447,10 +447,10 @@ To add new features or API endpoints:
 
 ### Testing
 
-You can test the SDK by modifying the `index.js` file and running:
+You can test the SDK by modifying the `index.ts` file and running:
 
 ```bash
-node index.js
+node index.ts
 ```
 
 ## 📄 License

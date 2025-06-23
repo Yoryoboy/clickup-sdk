@@ -1,4 +1,4 @@
-const buildQuery = (params) => {
+const buildQuery = (params: Record<string, any>) => {
   if (!params || Object.keys(params).length === 0) return "";
 
   const parts = [];

@@ -25,11 +25,13 @@ function delay(ms) {
 }
 
 class TaskManager {
-  constructor(client) {
+  client: any;
+
+  constructor(client: any) {
     this.client = client;
   }
 
-  async getTasks(params = {}) {
+  async getTasks(params: any = {}) {
     const { list_id, page, ...query } = params;
     if (!list_id) throw new Error("Missing list_id");
 
@@ -60,7 +62,7 @@ class TaskManager {
     return res.data.tasks.map((t) => new Task(t));
   }
 
-  async getFilteredTasks(params = {}) {
+  async getFilteredTasks(params: any = {}) {
     const { team_id, page, custom_fields, ...query } = params;
 
     if (!team_id) throw new Error("Missing team_id");
@@ -100,7 +102,7 @@ class TaskManager {
     return (res.data.tasks || []).map((t) => new Task(t));
   }
 
-  async updateTask(task_id, data = {}) {
+  async updateTask(task_id: string, data: any = {}) {
     if (!task_id) throw new Error("Missing task_id");
 
     const url = `/task/${task_id}`;
@@ -136,7 +138,7 @@ class TaskManager {
    * @returns {Promise<Task>} The created task
    * @throws {Error} If list_id is missing or taskData.name is missing
    */
-  async createTask(list_id, taskData) {
+  async createTask(list_id: string, taskData: any) {
     if (!list_id) throw new Error("Missing list_id");
     if (!taskData.name) throw new Error("Task name is required");
 
@@ -158,7 +160,7 @@ class TaskManager {
    * @returns {Promise<Array<Task>>} Array of created tasks
    * @throws {Error} If list_id is missing
    */
-  async createTasks(list_id, tasks, options = {}) {
+  async createTasks(list_id: string, tasks: any, options: any = {}) {
     if (!list_id) throw new Error("Missing list_id");
 
     // Default options
