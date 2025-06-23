@@ -8,11 +8,12 @@ import {
   CreateTasksOptions,
   TaskCreationProgress,
 } from "../types/index.js";
+import { AxiosInstance } from "axios";
 
 class TaskManager {
-  client: any;
+  client: AxiosInstance;
 
-  constructor(client: any) {
+  constructor(client: AxiosInstance) {
     this.client = client;
   }
 
@@ -20,7 +21,6 @@ class TaskManager {
     const { list_id, page, ...query } = params;
     if (!list_id) throw new Error("Missing list_id");
 
-    // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
       let allTasks: Task[] = [];
@@ -39,7 +39,6 @@ class TaskManager {
       return allTasks.map((t) => new Task(t));
     }
 
-    // Case 2: regular one-page fetch
     const search = buildQuery({ ...query, page });
     const url = `/list/${list_id}/task?${search}`;
     const res = await this.client.get(url);
@@ -52,12 +51,9 @@ class TaskManager {
 
     if (!team_id) throw new Error("Missing team_id");
 
-    // Handle custom_fields array by stringifying it if it's an array
     if (custom_fields && Array.isArray(custom_fields)) {
       query.custom_fields = JSON.stringify(custom_fields);
     }
-
-    // Case 1: fetch all pages
     if (page === "all") {
       let currentPage = 0;
       let allTasks: Task[] = [];
@@ -79,7 +75,6 @@ class TaskManager {
       return allTasks.map((t) => new Task(t));
     }
 
-    // Case 2: regular one-page fetch
     const search = buildQuery({ ...query, page });
     const url = `/team/${team_id}/task?${search}`;
     const res = await this.client.get(url);
