@@ -157,6 +157,35 @@ export interface CustomFieldFilter {
   value: any;
 }
 
+export interface UpdateTaskData {
+  name?: string;
+  description?: string;
+  markdown_content?: string;
+  status?: string;
+  priority?: number | null;
+  due_date?: number;
+  due_date_time?: boolean;
+  parent?: string;
+  time_estimate?: number;
+  start_date?: number;
+  start_date_time?: boolean;
+  points?: number;
+  assignees?: {
+    add?: string[];
+    rem?: string[];
+  };
+  group_assignees?: {
+    add?: string[];
+    rem?: string[];
+  };
+  watchers?: {
+    add?: string[];
+    rem?: string[];
+  };
+  archived?: boolean;
+  custom_item_id?: number | null;
+}
+
 export interface CreateTaskData {
   name: string;
   description?: string;

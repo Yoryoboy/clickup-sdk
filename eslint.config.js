@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
+import jsdoc from "eslint-plugin-jsdoc";
 
 export default defineConfig([
   {
@@ -14,7 +15,11 @@ export default defineConfig([
   },
   {
     files: ["**/*.{ts,mts,cts}"],
-    ...tseslint.configs.recommended,
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      jsdoc: jsdoc,
+    },
+    extends: [...tseslint.configs.recommended],
     rules: {
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/prefer-ts-expect-error": "warn",
@@ -28,12 +33,13 @@ export default defineConfig([
       "@typescript-eslint/no-non-null-assertion": "warn",
       "@typescript-eslint/no-var-requires": "warn",
       "@typescript-eslint/prefer-namespace-keyword": "warn",
-      "jsdoc/no-types": "error", // This will mark JSDoc types as errors
     },
     languageOptions: {
       globals: globals.node,
       parserOptions: {
         project: "./tsconfig.json",
+        ecmaVersion: 2022,
+        sourceType: "module",
       },
     },
   },

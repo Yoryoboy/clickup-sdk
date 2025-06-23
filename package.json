@@ -46,9 +46,11 @@
     "@types/node": "^24.0.3",
     "dotenv": "^16.5.0",
     "eslint": "^9.28.0",
+    "eslint-plugin-jsdoc": "^51.2.2",
     "globals": "^16.2.0",
     "rimraf": "^6.0.1",
     "standard": "^17.1.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.0"
   }
 }

@@ -7,6 +7,7 @@ import {
   CreateTaskData,
   CreateTasksOptions,
   TaskCreationProgress,
+  UpdateTaskData,
 } from "../types/index.js";
 import { AxiosInstance } from "axios";
 
@@ -36,14 +37,14 @@ class TaskManager {
         currentPage++;
       } while (!lastPage);
 
-      return allTasks.map((t) => new Task(t));
+      return allTasks.map((t: Task) => new Task(t));
     }
 
     const search = buildQuery({ ...query, page });
     const url = `/list/${list_id}/task?${search}`;
     const res = await this.client.get(url);
 
-    return res.data.tasks.map((t) => new Task(t));
+    return res.data.tasks.map((t: Task) => new Task(t));
   }
 
   async getFilteredTasks(params: GetFilteredTasksParams) {
@@ -72,17 +73,24 @@ class TaskManager {
         }
       } while (hasMore);
 
-      return allTasks.map((t) => new Task(t));
+      return allTasks.map((t: Task) => new Task(t));
     }
 
     const search = buildQuery({ ...query, page });
     const url = `/team/${team_id}/task?${search}`;
     const res = await this.client.get(url);
 
-    return (res.data.tasks || []).map((t) => new Task(t));
+    return (res.data.tasks || []).map((t: Task) => new Task(t));
   }
 
-  async updateTask(task_id: string, data: any = {}) {
+  /**
+   * Update a task by ID
+   * @param {string} task_id - The ID of the task to update
+   * @param {UpdateTaskData} data - The task data to update
+   * @returns {Promise<Task>} The updated task
+   * @throws {Error} If task_id is missing
+   */
+  async updateTask(task_id: string, data: UpdateTaskData = {}): Promise<Task> {
     if (!task_id) throw new Error("Missing task_id");
 
     const url = `/task/${task_id}`;
