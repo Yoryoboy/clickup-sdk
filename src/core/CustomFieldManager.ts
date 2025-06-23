@@ -2,11 +2,12 @@
  * Manages operations related to ClickUp Custom Fields
  */
 class CustomFieldManager {
+  client: any;
   /**
    * Creates a new CustomFieldManager instance
    * @param {Object} client - Axios client instance configured for ClickUp API
    */
-  constructor(client) {
+  constructor(client: any) {
     this.client = client;
   }
 

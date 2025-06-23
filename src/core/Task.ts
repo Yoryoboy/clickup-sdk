@@ -1,4 +1,5 @@
 class Task {
+  [key: string]: any;
   /**
    * Static method to reduce task information for either a single task or an array of tasks
    * @param {Task|Array<Task>} tasks - Single Task instance or array of Task instances
@@ -18,7 +19,7 @@ class Task {
     );
   }
 
-  constructor(data) {
+  constructor(data: any) {
     Object.assign(this, data);
   }
 

@@ -2,11 +2,12 @@
  * ListManager class for handling ClickUp list operations
  */
 class ListManager {
+  client: any;
   /**
    * Create a new ListManager instance
    * @param {Object} client - Axios client instance configured with auth headers
    */
-  constructor(client) {
+  constructor(client: any) {
     this.client = client;
   }
 
