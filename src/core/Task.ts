@@ -1,4 +1,9 @@
-import { Task as TaskType } from "../types/index.js";
+import {
+  CustomField,
+  Task as TaskType,
+  User,
+  Location,
+} from "../types/index.js";
 
 class Task implements TaskType {
   id!: string;
@@ -6,10 +11,12 @@ class Task implements TaskType {
   [key: string]: any;
   /**
    * Static method to reduce task information for either a single task or an array of tasks
-   * @param {Task|Array<Task>} tasks - Single Task instance or array of Task instances
-   * @returns {Object|Array<Object>} - Reduced task info object or array of reduced task info objects
+   * @param tasks - Single Task instance or array of Task instances
+   * @returns Reduced task info object or array of reduced task info objects
    */
-  static reduceInfo(tasks) {
+  static reduceInfo(
+    tasks: Task | Task[]
+  ): Record<string, any> | Record<string, any>[] {
     if (Array.isArray(tasks)) {
       return tasks.map((task) => task.reduceInfo());
     }
@@ -23,19 +30,19 @@ class Task implements TaskType {
     );
   }
 
-  constructor(data: any) {
+  constructor(data: Partial<TaskType>) {
     Object.assign(this, data);
   }
 
-  getAssigneeNames() {
-    return this.assignees?.map((a) => a.username) || [];
+  getAssigneeNames(): string[] {
+    return this.assignees?.map((a: User) => a.username) || [];
   }
 
-  isCompleted() {
+  isCompleted(): boolean {
     return this.status?.status === "done";
   }
 
-  reduceInfo() {
+  reduceInfo(): Record<string, any> {
     return {
       id: this.id,
       custom_id: this.custom_id,
@@ -61,10 +68,10 @@ class Task implements TaskType {
       folder_name: this.folder?.name || null,
       url: this.url,
       is_completed: this.isCompleted(),
-      locations: this.locations?.map((loc) => loc.name) || [],
+      locations: this.locations?.map((loc: Location) => loc.name) || [],
       custom_fields:
         this.custom_fields
-          ?.map((cf) => {
+          ?.map((cf: CustomField) => {
             if (
               cf.type === "drop_down" &&
               cf.type_config?.options &&
@@ -85,7 +92,9 @@ class Task implements TaskType {
               value: cf.value,
             };
           })
-          .filter((cf) => cf.value !== undefined && cf.value !== null) || [],
+          .filter(
+            (cf: CustomField) => cf.value !== undefined && cf.value !== null
+          ) || [],
 
       description: this.description,
     };
