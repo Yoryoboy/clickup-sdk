@@ -1,4 +1,10 @@
-import { CustomField, Task as TaskType, User, Location } from "../types/index";
+import {
+  CustomField,
+  Task as TaskType,
+  User,
+  Location,
+  ReducedTask,
+} from "../types/index";
 
 class Task implements TaskType {
   id!: string;
@@ -9,9 +15,7 @@ class Task implements TaskType {
    * @param tasks - Single Task instance or array of Task instances
    * @returns Reduced task info object or array of reduced task info objects
    */
-  static reduceInfo(
-    tasks: Task | Task[]
-  ): Record<string, any> | Record<string, any>[] {
+  static reduceInfo(tasks: Task | Task[]): ReducedTask | ReducedTask[] {
     if (Array.isArray(tasks)) {
       return tasks.map((task) => task.reduceInfo());
     }
@@ -37,7 +41,7 @@ class Task implements TaskType {
     return this.status?.status === "done";
   }
 
-  reduceInfo(): Record<string, any> {
+  reduceInfo(): ReducedTask {
     return {
       id: this.id,
       custom_id: this.custom_id,
@@ -73,7 +77,8 @@ class Task implements TaskType {
               cf.value !== undefined &&
               cf.value !== null
             ) {
-              const selectedOption = cf.type_config.options[cf.value];
+              const selectedOption =
+                cf?.type_config?.options[cf.value as number];
               return {
                 id: cf.id,
                 name: cf.name,

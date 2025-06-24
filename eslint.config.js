@@ -24,6 +24,8 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/prefer-ts-expect-error": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-implicit-any": "warn",
+      "@typescript-eslint/no-implicit-any-catch": "warn",
       "@typescript-eslint/ban-types": "warn",
       "@typescript-eslint/ban-ts-comment": "warn",
       "@typescript-eslint/no-namespace": "warn",

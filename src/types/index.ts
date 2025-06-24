@@ -29,6 +29,42 @@ export interface Task {
   locations?: Location[];
 }
 
+export interface ReducedTask {
+  id: string;
+  custom_id: null;
+  name: string;
+  status: string;
+  status_color: string;
+  date_created: string;
+  date_updated: string;
+  date_closed: string;
+  date_done: string;
+  archived: boolean;
+  creator: string;
+  creator_email: string;
+  assignees: string[];
+  watchers: string[];
+  tags: any[];
+  priority: null;
+  due_date: null;
+  start_date: string;
+  time_estimate: null;
+  list_name: string;
+  project_name: string;
+  folder_name: string;
+  url: string;
+  is_completed: boolean;
+  locations: any[];
+  custom_fields: ReducedCustomField[];
+  description: string;
+}
+
+export interface ReducedCustomField {
+  id: string;
+  name: string;
+  value: string;
+}
+
 export interface TaskStatus {
   status: string;
   color: string;
@@ -74,14 +110,14 @@ export interface Folder {
 }
 
 export interface CustomField {
-  id: string;
-  name: string;
-  type: CustomFieldType;
+  id?: string;
+  name?: string;
+  type?: CustomFieldType;
   type_config?: CustomFieldTypeConfig;
   date_created?: string;
   hide_from_guests?: boolean;
   required?: boolean;
-  value?: any;
+  value?: string | number;
 }
 
 export type CustomFieldType =
@@ -98,9 +134,9 @@ export type CustomFieldType =
   | "automatic_progress";
 
 export interface CustomFieldTypeConfig {
-  default?: number | string | boolean;
+  default?: number | string;
   options?: CustomFieldOption[];
-  [key: string]: any;
+  [key: string]: string | number | CustomFieldOption[];
 }
 
 export interface CustomFieldOption {
@@ -202,7 +238,7 @@ export interface CreateTaskData {
   parent?: string | null;
   links_to?: string | null;
   check_required_custom_fields?: boolean;
-  custom_fields?: any[];
+  custom_fields?: CustomField[];
 }
 
 export interface CreateTasksOptions {
