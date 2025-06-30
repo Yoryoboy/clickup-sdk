@@ -3,9 +3,10 @@
     "target": "ES2020",
     "module": "Node16",
     "moduleResolution": "node16",
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
+    "declarationDir": "dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
@@ -13,7 +14,7 @@
     "noImplicitAny": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "examples/**/*"],
+  "include": ["src"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
