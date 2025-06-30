@@ -27,4 +27,4 @@ coverage/
 Thumbs.db
 
 # Ignore examples directory (local development only)
-# examples/
+examples/
