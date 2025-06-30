@@ -1,6 +1,6 @@
 {
   "name": "@yoryoboy/clickup-sdk",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A modular TypeScript SDK for interacting with the ClickUp API",
   "type": "commonjs",
   "target": "ES2020",
