@@ -151,46 +151,49 @@ export interface Location {
   name: string;
 }
 
-export interface GetTasksParams {
-  list_id: string;
+/**
+ * Base interface for task query parameters
+ */
+export interface BaseTaskParams {
   page?: number | "all";
+  statuses?: string[];
+  assignees?: string[];
+  due_date_gt?: number;
+  due_date_lt?: number;
+  date_created_gt?: number;
+  date_created_lt?: number;
+  date_updated_gt?: number;
+  date_updated_lt?: number;
+  tags?: string[];
   include_closed?: boolean;
   reverse?: boolean;
   subtasks?: boolean;
-  statuses?: string[];
   include_subtasks?: boolean;
-  assignees?: string[];
-  due_date_gt?: number;
-  due_date_lt?: number;
-  date_created_gt?: number;
-  date_created_lt?: number;
-  date_updated_gt?: number;
-  date_updated_lt?: number;
+  custom_fields?: CustomFieldFilter[];
+  [key: string]: any;
 }
 
-export interface GetFilteredTasksParams {
+/**
+ * Parameters for getting tasks from a specific list
+ */
+export interface GetTasksParams extends BaseTaskParams {
+  list_id: string;
+}
+
+/**
+ * Parameters for getting filtered tasks across a team
+ */
+export interface GetFilteredTasksParams extends BaseTaskParams {
   team_id: string;
-  page?: number | "all";
   space_ids?: string[];
   project_ids?: string[];
   list_ids?: string[];
-  statuses?: string[];
-  assignees?: string[];
-  tags?: string[];
-  due_date_gt?: number;
-  due_date_lt?: number;
-  date_created_gt?: number;
-  date_created_lt?: number;
-  date_updated_gt?: number;
-  date_updated_lt?: number;
-  custom_fields?: CustomFieldFilter[];
-  [key: string]: any;
 }
 
 export interface CustomFieldFilter {
   field_id: string;
   operator: string;
-  value: any;
+  value: number | string | string[] | number[] | boolean;
 }
 
 export interface UpdateTaskData {

@@ -2,12 +2,12 @@ import Task from "./Task";
 import buildQuery from "../utils/queryBuilder";
 import { chunkArray, delay } from "../utils/helpers";
 import {
-  GetTasksParams,
   GetFilteredTasksParams,
   CreateTaskData,
   CreateTasksOptions,
   TaskCreationProgress,
   UpdateTaskData,
+  GetTasksParams,
 } from "../types/index";
 import { AxiosInstance } from "axios";
 
@@ -18,9 +18,31 @@ class TaskManager {
     this.client = client;
   }
 
+  /**
+   * Helper method to process common task parameters
+   * @private
+   */
+  private processTaskParams(params: any) {
+    const { page, custom_fields, ...query } = params;
+
+    // Handle custom fields consistently
+    if (custom_fields && Array.isArray(custom_fields)) {
+      query.custom_fields = JSON.stringify(custom_fields);
+    }
+
+    return { query, page };
+  }
+
+  /**
+   * Get tasks from a specific list
+   * @param {GetTasksParams} params - Parameters for filtering tasks
+   * @returns {Promise<Array<Task>>} Array of tasks
+   */
   async getTasks(params: GetTasksParams): Promise<Array<Task>> {
-    const { list_id, page, ...query } = params;
+    const { list_id } = params;
     if (!list_id) throw new Error("Missing list_id");
+
+    const { query, page } = this.processTaskParams(params);
 
     if (page === "all") {
       let currentPage = 0;
@@ -47,14 +69,17 @@ class TaskManager {
     return res.data.tasks.map((t: Task) => new Task(t));
   }
 
+  /**
+   * Get filtered tasks across a team
+   * @param {GetFilteredTasksParams} params - Parameters for filtering tasks
+   * @returns {Promise<Array<Task>>} Array of tasks
+   */
   async getFilteredTasks(params: GetFilteredTasksParams): Promise<Array<Task>> {
-    const { team_id, page, custom_fields, ...query } = params;
-
+    const { team_id } = params;
     if (!team_id) throw new Error("Missing team_id");
 
-    if (custom_fields && Array.isArray(custom_fields)) {
-      query.custom_fields = JSON.stringify(custom_fields);
-    }
+    const { query, page } = this.processTaskParams(params);
+
     if (page === "all") {
       let currentPage = 0;
       let allTasks: Task[] = [];
