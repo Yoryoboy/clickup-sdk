@@ -365,6 +365,7 @@ Manages operations related to ClickUp custom fields.
 
 Methods:
 - `getListCustomFields(list_id)`: Returns all custom fields for a specific list
+- `setCustomFieldValue(params)`: Sets a custom field value for a specific task
 
 #### getListCustomFields(list_id)
 
@@ -380,6 +381,27 @@ Example:
 // Get custom fields for a list
 const customFields = await clickUp.customFields.getListCustomFields('123456789');
 console.log(customFields);
+```
+
+#### setCustomFieldValue(params)
+
+Sets a custom field value for a specific task.
+
+Parameters:
+- `params.task_id` (required): The ID of the task to update
+- `params.field_id` (required): The universal unique identifier (UUID) of the custom field
+- `params.value` (required): The value to set for the custom field (as a string)
+
+Returns: Promise<Record<string, unknown>> - The API response
+
+Example:
+```javascript
+// Set a custom field value
+const result = await clickUp.customFields.setCustomFieldValue({
+  task_id: '86b5jqha9',
+  field_id: 'df45878b-b48e-415d-9561-f8d0392e9f46',
+  value: 'New Value'
+});
 ```
 
 ### Task Class

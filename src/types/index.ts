@@ -120,6 +120,15 @@ export interface CustomField {
   value?: string | number;
 }
 
+/**
+ * Parameters for setting a custom field value on a task
+ */
+export interface SetCustomFieldValueParams {
+  task_id: string;
+  field_id: string;
+  value: string;
+}
+
 export type CustomFieldType =
   | "text"
   | "drop_down"
