@@ -42,7 +42,7 @@ export interface ReducedTask {
   archived: boolean;
   creator: string;
   creator_email: string;
-  assignees: string[];
+  assignees: User[];
   watchers: string[];
   tags: any[];
   priority: null;
@@ -83,7 +83,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  color: string;
+  color?: string;
   profilePicture?: string;
   initials?: string;
 }

@@ -71,9 +71,11 @@ async function runExample() {
 
       return {
         name: task.name,
+        assignees: task.assignees.map((a) => a.id),
         description: customFieldValues("JOB_NAME")?.value,
         status: STATUS_MAP[statusValue] || "to do",
         date_created: task.date_created,
+        notify_all: false,
         custom_fields: [
           {
             id: customFields.find((cf) => cf.name === "ACTUAL COMPLETION DATE")

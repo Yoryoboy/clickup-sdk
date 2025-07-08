@@ -33,8 +33,16 @@ class Task implements TaskType {
     Object.assign(this, data);
   }
 
-  getAssigneeNames(): string[] {
-    return this.assignees?.map((a: User) => a.username) || [];
+  getAssigneeNames(): User[] {
+    return (
+      this.assignees?.map((a: User) => {
+        return {
+          id: a.id,
+          name: a.username,
+          email: a.email,
+        };
+      }) || []
+    );
   }
 
   isCompleted(): boolean {
