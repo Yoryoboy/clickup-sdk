@@ -207,6 +207,22 @@ Parameters:
 
 Returns: Promise<Task[]> - Array of Task instances
 
+#### getTask(task_id)
+
+Fetches a single task by its ID and returns its reduced information object.
+
+Parameters:
+- `task_id` (required): The ID of the task to retrieve
+
+Returns: Promise<ReducedTask> - Reduced task info
+
+Example:
+```javascript
+// Get a single task's reduced info
+const taskInfo = await clickUp.tasks.getTask('abc123def456');
+console.log(taskInfo.id, taskInfo.name, taskInfo.status);
+```
+
 #### getFilteredTasks(params)
 
 Fetches filtered tasks across an entire workspace.

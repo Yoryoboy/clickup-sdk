@@ -8,6 +8,7 @@ import {
   TaskCreationProgress,
   UpdateTaskData,
   GetTasksParams,
+  ReducedTask,
 } from "../types/index";
 import { AxiosInstance } from "axios";
 
@@ -106,6 +107,22 @@ class TaskManager {
     const res = await this.client.get(url);
 
     return (res.data.tasks || []).map((t: Task) => new Task(t));
+  }
+
+  /**
+   * Get a single task by ID
+   * @param {string} task_id - The ID of the task to retrieve
+   * @returns {Promise<ReducedTask>} The reduced task info
+   * @throws {Error} If task_id is missing
+   */
+  async getTask(task_id: string): Promise<ReducedTask> {
+    if (!task_id) throw new Error("Missing task_id");
+
+    const url = `/task/${task_id}`;
+    const res = await this.client.get(url);
+
+    const task = new Task(res.data);
+    return task.reduceInfo();
   }
 
   /**
