@@ -26,5 +26,3 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Ignore examples directory (local development only)
-examples/

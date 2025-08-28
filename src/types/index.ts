@@ -277,3 +277,41 @@ export interface AxiosClientConfig {
   timeout?: number;
   headers?: Record<string, string>;
 }
+
+export interface Teams {
+  teams: Team[];
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  color: string;
+  avatar: null;
+  members: Member[];
+}
+
+export interface Member {
+  user: User;
+  invited_by?: InvitedBy;
+  can_see_time_spent?: boolean;
+  can_see_time_estimated?: boolean;
+  can_see_points_estimated?: boolean;
+  can_edit_tags?: boolean;
+  can_create_views?: boolean;
+}
+
+export interface InvitedBy {
+  id: number;
+  username: string;
+  color: string;
+  email: string;
+  initials: string;
+  profilePicture: null;
+  banned_date: null;
+  status: Status;
+}
+
+export enum Status {
+  Active = "active",
+  Invited = "invited",
+}

@@ -420,6 +420,33 @@ const result = await clickUp.customFields.setCustomFieldValue({
 });
 ```
 
+### TeamManager Class
+
+Manages operations related to ClickUp Teams (workspaces).
+
+#### getTeams()
+
+Fetches all teams the API key has access to using `GET /team`.
+
+Parameters:
+- None
+
+Returns: `Promise<Teams>` — where `Teams` is `{ teams: Team[] }` as defined in `src/types/index.ts`.
+
+Example:
+```javascript
+// Retrieve teams (workspaces)
+const { teams } = await clickUp.teams.getTeams();
+
+// List team names
+console.log(teams.map(t => t.name));
+
+// Safely access members (may be empty or undefined depending on permissions)
+for (const team of teams) {
+  console.log(`Team: ${team.name} (members: ${team.members?.length ?? 0})`);
+}
+```
+
 ### Task Class
 
 Wrapper for individual task objects with helpful methods.

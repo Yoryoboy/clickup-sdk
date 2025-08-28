@@ -27,8 +27,25 @@ async function runExample() {
     // Initialize the ClickUp client
     const clickUp = new ClickUp(apiKey);
 
-    const task = await clickUp.tasks.getTask("86b5zzdc7");
-    console.log(task);
+    const team = await clickUp.teams.getTeams();
+    const members = team.teams[0].members;
+
+    const membersToFind = [
+      "agustina rojas",
+      "carlos",
+      "elias veron",
+      "julieta martinotti",
+      "sara bolivar",
+    ];
+
+    const memberIds = membersToFind.map((member) => {
+      const user = members.find(
+        (m) => m?.user?.username?.toLowerCase() === member.toLowerCase()
+      );
+      return { member, id: user?.user.id };
+    });
+
+    console.log(memberIds);
   } catch (error) {
     console.error("Error:", error.message);
     if (error.response) {
