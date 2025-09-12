@@ -1,9 +1,9 @@
-import { createAxiosClient } from "../api/axiosClient";
-import TaskManager from "./TaskManager";
-import CustomFieldManager from "./CustomFieldManager";
-import ListManager from "./ListManager";
+import { createAxiosClient } from "../api/axiosClient.js";
+import TaskManager from "./TaskManager.js";
+import CustomFieldManager from "./CustomFieldManager.js";
+import ListManager from "./ListManager.js";
 import { AxiosInstance } from "axios";
-import TeamManager from "./TeamManager";
+import TeamManager from "./TeamManager.js";
 
 class ClickUp {
   apiKey: string;

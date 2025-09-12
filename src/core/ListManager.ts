@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { List } from "../types/index";
+import type { List } from "../types/index.js";
 
 /**
  * ListManager class for handling ClickUp list operations

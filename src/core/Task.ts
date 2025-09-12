@@ -1,10 +1,10 @@
-import {
+import type {
   CustomField,
   Task as TaskType,
   User,
   Location,
   ReducedTask,
-} from "../types/index";
+} from "../types/index.js";
 
 class Task implements TaskType {
   id!: string;

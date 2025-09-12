@@ -2,16 +2,16 @@
   "name": "@yoryoboy/clickup-sdk",
   "version": "1.2.0",
   "description": "A modular TypeScript SDK for interacting with the ClickUp API",
-  "type": "commonjs",
+  "type": "module",
   "target": "ES2020",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "files": [
@@ -21,7 +21,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm run clean && tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json && node scripts/write-cjs-package.cjs",
+    "build": "pnpm run clean && pnpm run build:esm && pnpm run build:cjs",
     "prepublishOnly": "pnpm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

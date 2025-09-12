@@ -1,7 +1,7 @@
-import Task from "./Task";
-import buildQuery from "../utils/queryBuilder";
-import { chunkArray, delay } from "../utils/helpers";
-import {
+import Task from "./Task.js";
+import buildQuery from "../utils/queryBuilder.js";
+import { chunkArray, delay } from "../utils/helpers.js";
+import type {
   GetFilteredTasksParams,
   CreateTaskData,
   CreateTasksOptions,
@@ -9,7 +9,7 @@ import {
   UpdateTaskData,
   GetTasksParams,
   ReducedTask,
-} from "../types/index";
+} from "../types/index.js";
 import { AxiosInstance } from "axios";
 
 class TaskManager {
@@ -254,7 +254,7 @@ class TaskManager {
 
       // Create tasks in current batch (in parallel)
       const startTime = Date.now();
-      const batchPromises = batch.map((taskData) =>
+      const batchPromises = batch.map((taskData: CreateTaskData) =>
         this.createTask(list_id, taskData)
       );
       const batchResults = await Promise.all(batchPromises);

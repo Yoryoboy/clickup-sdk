@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Teams } from "../types/index";
+import type { Teams } from "../types/index.js";
 
 /**
  * Manages operations related to ClickUp Teams (workspaces)

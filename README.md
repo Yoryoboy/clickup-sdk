@@ -19,7 +19,7 @@ git clone https://github.com/yourusername/clickup-sdk.git
 cd clickup-sdk
 
 # Install dependencies
-npm install
+pnpm install
 ```
 
 ## 🔑 Authentication
@@ -34,17 +34,33 @@ CLICKUP_API_KEY=your_api_key_here
 
 ## 🚀 Usage
 
+### Importing the SDK
+
+This package ships dual modules: ESM and CommonJS. Use either style:
+
+- ESM/TypeScript
+```ts
+import ClickUp, { Task, TaskManager, TeamManager } from '@yoryoboy/clickup-sdk';
+```
+
+- CommonJS
+```js
+const sdk = require('@yoryoboy/clickup-sdk');
+const ClickUp = sdk.default; // default export
+const { Task, TaskManager, TeamManager } = sdk; // named exports
+```
+
 ### Basic Example
 
 ```typescript
 import dotenv from 'dotenv';
-import ClickUp from './core/ClickUp.js';
+import ClickUp from '@yoryoboy/clickup-sdk';
 
 // Load environment variables
 dotenv.config();
 
 // Initialize the ClickUp client
-const clickUp = new ClickUp(process.env.CLICKUP_API_KEY);
+const clickUp = new ClickUp(process.env.CLICKUP_API_KEY as string);
 
 // Get tasks from a list
 const tasks = await clickUp.tasks.getTasks({
