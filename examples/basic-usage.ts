@@ -12,6 +12,7 @@ import Task from "../src/core/Task";
 import {
   CreateTaskData,
   CustomField,
+  GetFilteredTasksParams,
   ReducedTask,
   Task as TaskType,
 } from "../src/types/index";
@@ -45,7 +46,37 @@ async function runExample() {
       return { member, id: user?.user.id };
     });
 
-    console.log(memberIds);
+    const params: GetFilteredTasksParams = {
+      page: "all",
+      team_id: team.teams[0].id,
+      assignees: memberIds.map((m) => m.id?.toString().trim() || ""),
+      include_closed: true,
+      custom_fields: [
+        {
+          field_id: "ed83fc7c-baeb-4fdc-8e59-7ccbb4587cd5",
+          operator: "RANGE",
+          value: [
+            new Date("2025-08-01").getTime(),
+            new Date("2025-09-01").getTime(),
+          ],
+        },
+      ],
+    };
+
+    const filteredMembersTasks = await clickUp.tasks.getFilteredTasks(params);
+
+    const reducedTasks = (
+      Task.reduceInfo(filteredMembersTasks) as ReducedTask[]
+    ).map((t) => {
+      return {
+        id: t.id,
+        name: t.name,
+        assignees: t.assignees.map((a) => a.name),
+        listName: t.list_name,
+      };
+    });
+
+    console.dir(reducedTasks, { depth: null });
   } catch (error) {
     console.error("Error:", error.message);
     if (error.response) {
