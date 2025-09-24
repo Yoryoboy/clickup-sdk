@@ -342,12 +342,12 @@ const newTask = await clickUp.tasks.createTask("123456789", {
   due_date: 1735603200000 // Unix timestamp in ms
 });
 
-// Create multiple tasks with batching
-const tasksToCreate = [
-  { name: "Task 1", status: "to do" },
-  { name: "Task 2", status: "in progress" },
-  // ... more tasks
-];
+  // Create multiple tasks with batching
+  const tasksToCreate = [
+    { name: "Task 1", status: "to do" },
+    { name: "Task 2", status: "in progress" },
+    // ... more tasks
+  ];
 
 const createdTasks = await clickUp.tasks.createTasks("123456789", tasksToCreate, {
   batchSize: 50, // Process 50 tasks at a time
@@ -355,11 +355,42 @@ const createdTasks = await clickUp.tasks.createTasks("123456789", tasksToCreate,
 });
 ```
 
+#### uploadAttachment(task_id, attachment, options)
+
+Uploads a file as an attachment to a task.
+
+Parameters:
+- `task_id` (required): The ID of the task to attach the file to.
+- `attachment` (required): The attachment source. Can be a local file path (`string`), a `Buffer`, a `Readable` stream, or a `Blob` (Node 18+).
+- `options` (optional): An object with optional properties:
+  - `filename`: A custom name for the attachment.
+  - `contentType`: The MIME type of the file (e.g., `"image/png"`).
+
+Returns: `Promise<any>` - The attachment creation response from the ClickUp API.
+
+Example:
+```javascript
+// Upload from a local file path
+await clickUp.tasks.uploadAttachment(
+  "task_123",
+  "./files/report.pdf",
+  { filename: "final-report.pdf" }
+);
+
+// Upload from a Buffer in memory
+const fileContent = Buffer.from("This is a test file.");
+await clickUp.tasks.uploadAttachment(
+  "task_456",
+  fileContent,
+  { filename: "test.txt", contentType: "text/plain" }
+);
+```
+
 ### ListManager Class
 
 Manages operations related to ClickUp lists.
-
-#### addTaskToList(list_id, task_id)
+{{ ... }}
+{{ ... }}
 
 Adds a task to an additional list. Note that this requires the "Tasks in Multiple Lists" ClickApp to be enabled in your workspace.
 

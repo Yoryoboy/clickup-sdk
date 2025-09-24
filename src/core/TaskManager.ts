@@ -1,6 +1,12 @@
 import Task from "./Task.js";
 import buildQuery from "../utils/queryBuilder.js";
 import { chunkArray, delay } from "../utils/helpers.js";
+import { AxiosInstance, AxiosError } from "axios";
+import FormData from "form-data";
+import { createReadStream } from "fs";
+import { access } from "fs/promises";
+import path from "path";
+import { Readable } from "stream";
 import type {
   GetFilteredTasksParams,
   CreateTaskData,
@@ -9,8 +15,8 @@ import type {
   UpdateTaskData,
   GetTasksParams,
   ReducedTask,
+  UploadAttachmentOptions,
 } from "../types/index.js";
-import { AxiosInstance } from "axios";
 
 class TaskManager {
   client: AxiosInstance;
@@ -323,6 +329,93 @@ class TaskManager {
     });
 
     return createdTasks;
+  }
+
+  // Attachment upload
+  // -------------------------------------------------
+  // Supports: file path (string), Buffer, Readable stream, or Blob
+  // Endpoint: POST /task/{task_id}/attachment (multipart/form-data)
+  async uploadAttachment(
+    task_id: string,
+    attachment: string | Buffer | Readable | Blob,
+    options: UploadAttachmentOptions = {}
+  ): Promise<any> {
+    if (!task_id) throw new Error("Missing task_id");
+    if (!attachment) throw new Error("Attachment is required");
+
+    const form = new FormData();
+
+    // Resolve data source and filename
+    const { data, filename, contentType } = await this.resolveAttachment(
+      attachment,
+      options
+    );
+
+    form.append("attachment", data as any, {
+      filename,
+      contentType,
+    } as any);
+
+    try {
+      const res = await this.client.post(`/task/${task_id}/attachment`, form, {
+        headers: {
+          ...form.getHeaders(),
+        },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
+      });
+      return res.data;
+    } catch (err) {
+      const msg = this.formatUploadError(err, task_id);
+      throw new Error(msg);
+    }
+  }
+
+  private async resolveAttachment(
+    attachment: string | Buffer | Readable | Blob,
+    options: UploadAttachmentOptions
+  ): Promise<{ data: Buffer | Readable; filename: string; contentType?: string }> {
+    // File path
+    if (typeof attachment === "string") {
+      const filePath = attachment;
+      const name = options.filename || path.basename(filePath);
+      await access(filePath);
+      return { data: createReadStream(filePath), filename: name, contentType: options.contentType };
+    }
+
+    // Blob (Node 18+)
+    if (typeof Blob !== "undefined" && attachment instanceof Blob) {
+      const buf = Buffer.from(await attachment.arrayBuffer());
+      const name = options.filename || "attachment";
+      const ct = options.contentType || (attachment.type || undefined);
+      return { data: buf, filename: name, contentType: ct };
+    }
+
+    // Buffer
+    if (Buffer.isBuffer(attachment)) {
+      const name = options.filename || "attachment";
+      return { data: attachment, filename: name, contentType: options.contentType };
+    }
+
+    // Readable stream
+    if (attachment instanceof Readable) {
+      const name = options.filename || "attachment";
+      return { data: attachment, filename: name, contentType: options.contentType };
+    }
+
+    throw new Error("Unsupported attachment type. Use a file path, Buffer, Readable stream, or Blob.");
+  }
+
+  private formatUploadError(error: unknown, task_id: string): string {
+    if (error && typeof error === "object" && (error as any).isAxiosError) {
+      const axiosErr = error as AxiosError<any>;
+      const status = axiosErr.response?.status;
+      const data = axiosErr.response?.data;
+      return `Failed to upload attachment for task ${task_id}. Status: ${status}. Details: ${JSON.stringify(
+        data
+      )}`;
+    }
+    return `Failed to upload attachment for task ${task_id}: ${(error as Error).message}`;
   }
 }
 

@@ -260,6 +260,11 @@ export interface CreateTasksOptions {
   onProgress?: (progress: TaskCreationProgress) => void;
 }
 
+export interface UploadAttachmentOptions {
+  filename?: string;
+  contentType?: string;
+}
+
 export interface TaskCreationProgress {
   type: "batchStart" | "batchComplete" | "waiting" | "complete";
   batchNumber?: number;
